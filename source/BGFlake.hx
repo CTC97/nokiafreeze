@@ -16,7 +16,7 @@ class BGFlake extends FlxSprite
 	private var random:FlxRandom;
 	private var playState:PlayState;
 
-	private var updateToggle:Bool;
+	private var updateToggle:Int;
 	private var lateralWiggleToggle:Bool;
 
 	public function new(ps:PlayState, x:Int, y:Int)
@@ -33,7 +33,7 @@ class BGFlake extends FlxSprite
 
 		playState = ps;
 
-		updateToggle = true;
+		updateToggle = 0;
 		lateralWiggleToggle = false;
 
 		if (xDir)
@@ -49,10 +49,11 @@ class BGFlake extends FlxSprite
 		super.update(elapsed);
 
 		// slow down update speed for these snowflakes
-		updateToggle = !updateToggle;
+		updateToggle++;
 
-		if (updateToggle)
+		if (updateToggle >= 2)
 		{
+			updateToggle = 0;
 			// lateralWiggleToggle = !lateralWiggleToggle;
 			// // x += 8 * xSpeed;
 			// if (lateralWiggleToggle)
