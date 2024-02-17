@@ -35,6 +35,8 @@ class Main extends Sprite
 		[128, 112], [128, 112], [128, 112], [96, 112], [96, 80], [128, 112]
 	];
 
+	public static var VALID_ROTATIONS = [0];
+
 	public static var lastFlakeSpawnX:Int = -1;
 
 	public function new()
