@@ -23,7 +23,7 @@ class BGFlake extends FlxSprite
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.bgflake__png, false, Main.SCALE, Main.SCALE);
+		loadGraphic(AssetPaths.bgflake_inverted__png, false, Main.SCALE, Main.SCALE);
 
 		random = new FlxRandom();
 

@@ -17,19 +17,31 @@ class PlayState extends FlxState
 
 	private var random:FlxRandom;
 
+	private var flakes:FlxTypedGroup<Flake>;
+
+	private var flakeCooldown:Int;
+	private var flakeCooldownSet:Int;
+
 	override public function create()
 	{
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
-		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbg__png, false, 672, 384);
+		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
-
-		maxBgFlakes = 64;
-		flakeCount = 0;
 
 		bgFlakes = new FlxTypedGroup<BGFlake>();
 		add(bgFlakes);
 
+		flakes = new FlxTypedGroup<Flake>();
+		add(flakes);
+
+		maxBgFlakes = 32;
+		flakeCount = 0;
+
 		random = new FlxRandom();
+
+		flakes.add(new Flake());
+
+		flakeCooldown = flakeCooldownSet = 45;
 
 		super.create();
 	}
@@ -40,10 +52,20 @@ class PlayState extends FlxState
 
 		trace(bgFlakes.length);
 
+		if (flakeCooldown <= 0) {
+			flakeCooldown = flakeCooldownSet;
+			flakes.add(new Flake());
+		}
+		flakeCooldown--;
+
 		if (flakeCount < maxBgFlakes)
 		{
 			flakeCount++;
-			bgFlakes.add(new BGFlake(this, random.int(0, 84) * Main.SCALE, -1 * random.int(0, 20) * Main.SCALE));
+			bgFlakes.add(new BGFlake(this, random.int(0, 84) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+		}
+
+		for (flake in flakes) {
+			flake.updateFlake();
 		}
 	}
 
