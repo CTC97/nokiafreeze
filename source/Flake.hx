@@ -28,7 +28,9 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     private var angle:Int;
 
-	public function new()
+    private var flakeIndex:Int;
+
+	public function new(?fIndex = -1, ?sIndex = -1)
 	{
 		super();
 
@@ -36,27 +38,30 @@ class Flake extends FlxTypedGroup<FlxSprite>
         flakeHeight = 96;
 
 		random = new FlxRandom();
-
         updateToggleLength = Std.int(random.int(40, 80) / 8); // need to play around with this to get rid of glitchy overlaps
 
-        xBase = random.int(Main.SCALE * 1, Main.SCALE * 84 - Main.SCALE * 10);
+        xBase = random.int(1, 70) * Main.SCALE;
         while((Math.abs(Main.lastFlakeSpawnX - xBase) < Main.SCALE * 16)){
-            xBase = random.int(Main.SCALE * 1, Main.SCALE * 84 - Main.SCALE * 10);
+            xBase = random.int(1, 70) * Main.SCALE;
         }
         yBase = Main.SCALE * -15;
         Main.lastFlakeSpawnX = xBase;
 
         angle = Main.VALID_ROTATIONS[random.int(0, 3)];
 
+        if (fIndex == -1) flakeIndex = random.int(0, Main.BASEFLAKES.length-1);
+        else flakeIndex = fIndex;
+        
         flakeBase = new FlxSprite(xBase, yBase);
-        flakeBase.loadGraphic(Main.BASEFLAKES[random.int(0, Main.BASEFLAKES.length-1)], false, flakeWidth, flakeHeight);
+        flakeBase.loadGraphic(Main.BASEFLAKES[flakeIndex], false, flakeWidth, flakeHeight);
         flakeBase.angle = angle;
         add(flakeBase);
 
         
-        spineIndex = Std.int(Math.pow(random.int(0, Main.SPINES.length-1), 3) % Main.SPINES.length);
+        if (sIndex == -1) spineIndex = Std.int(Math.pow(random.int(0, Main.SPINES.length-1), 3) % Main.SPINES.length);
+        else spineIndex = sIndex;
+       
         spineDimensions = Main.SPINE_SIZES[spineIndex];
-
         spines = new FlxSprite((xBase + (flakeWidth/2)) - ((spineDimensions[0])/2), (yBase + (flakeHeight/2)) - ((spineDimensions[1])/2));
         spines.loadGraphic(Main.SPINES[spineIndex], false, spineDimensions[0], spineDimensions[1]);
         spines.angle = angle;
@@ -67,8 +72,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
         updateToggle = 0;
 	}
 
-	public function updateFlake()
-	{
+	public function updateFlake() {
         // xBase++;
 		// flakeBase.x = xBase;
         if (updateToggle >= updateToggleLength) {
@@ -86,4 +90,8 @@ class Flake extends FlxTypedGroup<FlxSprite>
             spines.exists = false;
         }
 	}
+
+    public function getSprites() {
+        return [flakeIndex, spineIndex];
+    }
 }

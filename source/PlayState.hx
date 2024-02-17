@@ -22,6 +22,10 @@ class PlayState extends FlxState
 	private var flakeCooldown:Int;
 	private var flakeCooldownSet:Int;
 
+	private var hud:HUD;
+
+	private var targetFlake:Array<Int>;
+
 	override public function create()
 	{
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
@@ -41,7 +45,13 @@ class PlayState extends FlxState
 
 		flakes.add(new Flake());
 
-		flakeCooldown = flakeCooldownSet = 45;
+		flakeCooldown = flakeCooldownSet = 20;
+
+		hud = new HUD();
+		add(hud);
+
+		//targetFlake == [1, 1];
+		hud.displayTargetFlake(1, 1);
 
 		super.create();
 	}
