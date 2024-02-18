@@ -22,8 +22,10 @@ class Selector extends FlxSprite
             var flakeCoords:Array<Float> = selectedFlake.returnCoordinatesForCenterSelector();
             x = flakeCoords[0];
             y = flakeCoords[1];
+            visible = true;
         } else {
             x = y = 0;
+            visible = false;
         }
         
 		super.update(elapsed);
@@ -36,5 +38,9 @@ class Selector extends FlxSprite
 
     public function getSelectedFlake() {
         return selectedFlake;
+    }
+
+    public function getOnFlake() {
+        return onFlake;
     }
 }

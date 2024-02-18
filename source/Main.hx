@@ -44,10 +44,5 @@ class Main extends Sprite
 		super();
 		addChild(new FlxGame(0, 0, PlayState, true));
 		FlxG.mouse.visible = false;
-
-		for (asset in SPINES)
-		{
-			trace('w: $Std.int(asset.width), h: $asset.height');
-		}
 	}
 }

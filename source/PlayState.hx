@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -29,6 +30,11 @@ class PlayState extends FlxState
 	private var elapsedCount:Float;
 
 	private var selector:Selector;
+
+	private var up:Bool = false;
+    private var down:Bool = false;
+    private var left:Bool = false;
+    private var right:Bool = false;
 
 	override public function create()
 	{
@@ -62,14 +68,20 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		trace(elapsed, elapsedCount);
+		//trace(elapsed, elapsedCount);
+
+		manageInput();
 
 		elapsedCount += elapsed;
 
 		if (elapsedCount > 1) {
 			var tempFlake:Flake = new Flake();
-			selector.setSelectedFlake(tempFlake);
-			hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+
+			if (!selector.getOnFlake()) {
+				selector.setSelectedFlake(tempFlake);
+				hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+			}
+
 			flakes.add(tempFlake);
 			elapsedCount = 0;
 		}
@@ -92,8 +104,62 @@ class PlayState extends FlxState
 		}
 	}
 
+	private function manageInput() {
+		up = FlxG.keys.justPressed.UP;
+		down = FlxG.keys.justPressed.DOWN;
+		left = FlxG.keys.justPressed.LEFT;
+		right = FlxG.keys.justPressed.RIGHT;
+
+		if (up) moveSelector("up");
+		if (down) moveSelector("down");
+		if (left) moveSelector("left");
+		if (right) moveSelector("right");
+	}
+
 	public function decreaseBGFlakes()
 	{
 		bgFlakeCount--;
+	}
+
+	private function moveSelector(direction:String) {
+		trace("MOVE SELECTOR ", direction);
+
+		var selectedFlake:Flake = selector.getSelectedFlake();
+		var closestFlake:Flake = null;
+		var closestDistance:Float = Math.POSITIVE_INFINITY;
+
+		var found:Bool = false;
+
+		trace('entering loop');
+		for (flake in flakes) {
+			var validCheck:Bool = false;
+
+			validCheck = (direction == "up" && flake.getY() < selectedFlake.getY()) || 
+				(direction == "down" && flake.getY() > selectedFlake.getY()) ||
+				(direction == "left" && flake.getX() < selectedFlake.getX()) || 
+				(direction == "right" && flake.getX() > selectedFlake.getX());
+
+			if (validCheck) {
+				trace('valid Check!');
+
+				// var distance:Float = Math.POSITIVE_INFINITY;
+				// if (direction == "up" || direction == "down") distance = Math.abs(flake.getY() - selectedFlake.getY());
+				// if (direction == "right" || direction == "left") distance = Math.abs(flake.getX() - selectedFlake.getX());
+
+				var distance:Float = Math.sqrt(Math.pow((flake.getX() - selectedFlake.getX()), 2) + Math.pow((flake.getY() - selectedFlake.getY()), 2));
+				if (distance < closestDistance) {
+					 closestFlake = flake; 
+					 closestDistance = distance;
+				}
+
+				found = true;
+			} else continue;
+		}
+
+		if (found) {
+			trace('found valid sprite at ', closestFlake.getX(), closestFlake.getY()); 
+			selector.setSelectedFlake(closestFlake);
+			hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+		}
 	}
 }

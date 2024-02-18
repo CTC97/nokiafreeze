@@ -43,7 +43,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
         updateToggleLength = Std.int(random.int(40, 80) / 8); // need to play around with this to get rid of glitchy overlaps
 
         xBase = random.int(26, 45) * Main.SCALE;
-        trace("SPAWNING AT ", xBase);
+        //trace("SPAWNING AT ", xBase);
         while((Math.abs(Main.lastFlakeSpawnX - xBase) < Main.SCALE * 8)){
             xBase = random.int(26, 45) * Main.SCALE;
         }
@@ -76,7 +76,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
         updateToggle = 0;
 
-        trace('added at $xBase, $yBase');
+       // trace('added at $xBase, $yBase');
 	}
 
 	public function updateFlake(elapsed) {
@@ -119,5 +119,13 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     public function getSpineDimensions() {
         return spineDimensions;
+    }
+
+    public function getX() {
+        return flakeBase.x;
+    }
+
+    public function getY() {
+        return flakeBase.y;
     }
 }
