@@ -25,7 +25,7 @@ class PlayState extends FlxState
 
 	private var hud:HUD;
 
-	private var targetFlake:Array<Int>;
+	private var targetFlake:Flake;
 
 	private var elapsedCount:Float;
 
@@ -53,12 +53,13 @@ class PlayState extends FlxState
 
 		random = new FlxRandom();
 
+		targetFlake = new Flake();
 		selector = new Selector();
-		hud = new HUD(selector);
+		hud = new HUD(selector, targetFlake);
 		add(hud);
 		add(selector);
 
-		hud.displayTargetFlake(1, 1);
+		hud.displayTargetFlake(targetFlake);
 
 		elapsedCount = 0;
 
@@ -71,15 +72,18 @@ class PlayState extends FlxState
 		//trace(elapsed, elapsedCount);
 
 		manageInput();
+		
+		hud.updateCharacteristicBox(targetFlake, selector.getSelectedFlake());
 
 		elapsedCount += elapsed;
 
 		if (elapsedCount > 1) {
 			var tempFlake:Flake = new Flake();
+			trace("ADDING new flake with char ", tempFlake.getCharacteristicVal());
 
 			if (!selector.getOnFlake()) {
 				selector.setSelectedFlake(tempFlake);
-				hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+				hud.displaySelectedFlake(selector.getSelectedFlake());
 			}
 
 			flakes.add(tempFlake);
@@ -159,7 +163,7 @@ class PlayState extends FlxState
 		if (found) {
 			trace('found valid sprite at ', closestFlake.getX(), closestFlake.getY()); 
 			selector.setSelectedFlake(closestFlake);
-			hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+			hud.displaySelectedFlake(selector.getSelectedFlake());
 		}
 	}
 }

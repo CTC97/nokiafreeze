@@ -32,6 +32,8 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     private var belowScreen = false;
 
+    private var characteristicVal:String;
+
 	public function new(?fIndex = -1, ?sIndex = -1)
 	{
 		super();
@@ -75,6 +77,8 @@ class Flake extends FlxTypedGroup<FlxSprite>
         //spines = new FlxSprite();
 
         updateToggle = 0;
+
+        characteristicVal = Std.string(random.int(0, 4));
 
        // trace('added at $xBase, $yBase');
 	}
@@ -127,5 +131,9 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     public function getY() {
         return flakeBase.y;
+    }
+
+    public function getCharacteristicVal() {
+        return characteristicVal;
     }
 }
