@@ -28,6 +28,8 @@ class PlayState extends FlxState
 
 	private var elapsedCount:Float;
 
+	private var selector:Selector;
+
 	override public function create()
 	{
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
@@ -45,25 +47,30 @@ class PlayState extends FlxState
 
 		random = new FlxRandom();
 
-		hud = new HUD();
+		selector = new Selector();
+		hud = new HUD(selector);
 		add(hud);
+		add(selector);
 
 		hud.displayTargetFlake(1, 1);
 
 		elapsedCount = 0;
-
 
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
+		super.update(elapsed);
 		trace(elapsed, elapsedCount);
 
 		elapsedCount += elapsed;
 
 		if (elapsedCount > 1) {
-			flakes.add(new Flake());
+			var tempFlake:Flake = new Flake();
+			selector.setSelectedFlake(tempFlake);
+			hud.displaySelectedFlake(selector.getSelectedFlake().getSprites()[0], selector.getSelectedFlake().getSprites()[1]);
+			flakes.add(tempFlake);
 			elapsedCount = 0;
 		}
 		//flakeCooldown--;
@@ -83,8 +90,6 @@ class PlayState extends FlxState
 				//trace('removed -> ', flakes.length);
 			}
 		}
-
-		super.update(elapsed);
 	}
 
 	public function decreaseBGFlakes()

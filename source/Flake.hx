@@ -113,6 +113,10 @@ class Flake extends FlxTypedGroup<FlxSprite>
 	}
 
     public function returnCoordinatesForCenterSelector() {
-        return [(xBase + spineDimensions[0] / 2) - 80, (yBase + spineDimensions[1] / 2) - 72];
+        return [(spines.x + spineDimensions[0] / 2) - 80, (spines.y + spineDimensions[1] / 2) - 72];
+    }
+
+    public function getSpineDimensions() {
+        return spineDimensions;
     }
 }

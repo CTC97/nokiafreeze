@@ -1,10 +1,8 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.math.FlxRandom;
 
-class BGFlake extends FlxSprite
+class Selector extends FlxSprite
 {
 	private var selectedFlake:Flake;
     private var onFlake:Bool;
@@ -22,9 +20,21 @@ class BGFlake extends FlxSprite
 	{
         if (onFlake) {
             var flakeCoords:Array<Float> = selectedFlake.returnCoordinatesForCenterSelector();
+            x = flakeCoords[0];
+            y = flakeCoords[1];
+        } else {
+            x = y = 0;
         }
         
-
 		super.update(elapsed);
 	}
+
+    public function setSelectedFlake(flake:Flake) {
+        selectedFlake = flake;
+        onFlake = true;
+    }
+
+    public function getSelectedFlake() {
+        return selectedFlake;
+    }
 }
