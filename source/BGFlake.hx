@@ -41,13 +41,11 @@ class BGFlake extends FlxSprite
 			xSpeed = -1 * xSpeed;
 		}
 
-		trace(pretty_print());
+		//trace(pretty_print());
 	}
 
 	override function update(elapsed:Float)
 	{
-		super.update(elapsed);
-
 		// slow down update speed for these snowflakes
 		updateToggle++;
 
@@ -70,6 +68,8 @@ class BGFlake extends FlxSprite
 				playState.decreaseBGFlakes();
 			}
 		}
+
+		super.update(elapsed);
 	}
 
 	public function pretty_print()

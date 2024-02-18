@@ -11,7 +11,7 @@ class PlayState extends FlxState
 	private var bg:FlxSprite;
 
 	private var maxBgFlakes:Int;
-	private var flakeCount:Int;
+	private var bgFlakeCount:Int;
 
 	private var bgFlakes:FlxTypedGroup<BGFlake>;
 
@@ -26,6 +26,8 @@ class PlayState extends FlxState
 
 	private var targetFlake:Array<Int>;
 
+	private var elapsedCount:Float;
+
 	override public function create()
 	{
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
@@ -39,63 +41,54 @@ class PlayState extends FlxState
 		add(flakes);
 
 		maxBgFlakes = 32;
-		flakeCount = 0;
+		bgFlakeCount = 0;
 
 		random = new FlxRandom();
-
-		flakes.add(new Flake());
-
-		flakeCooldown = flakeCooldownSet = 20;
 
 		hud = new HUD();
 		add(hud);
 
-		//targetFlake == [1, 1];
 		hud.displayTargetFlake(1, 1);
+
+		elapsedCount = 0;
+
 
 		super.create();
 	}
 
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
+		trace(elapsed, elapsedCount);
 
-		trace(bgFlakes.length);
+		elapsedCount += elapsed;
 
-		if (flakeCooldown <= 0) {
-			flakeCooldown = flakeCooldownSet;
+		if (elapsedCount > 1) {
 			flakes.add(new Flake());
+			elapsedCount = 0;
 		}
-		flakeCooldown--;
+		//flakeCooldown--;
 
-		if (flakeCount < maxBgFlakes)
+
+		if (bgFlakeCount < maxBgFlakes)
 		{
-			flakeCount++;
+			bgFlakeCount++;
 			bgFlakes.add(new BGFlake(this, random.int(0, 84) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
 		}
 
 		for (flake in flakes) {
-			flake.updateFlake();
+			flake.updateFlake(elapsed);
+			//trace(flakes.length);
+			if (flake.getBelowScreen() == true) {
+				flakes.remove(flake, true);
+				//trace('removed -> ', flakes.length);
+			}
 		}
-	}
 
-	// private function removeDeadBGFlakes()
-	// {
-	// 	trace('list: ', bgFlakes);
-	// 	for (i in bgFlakes.length - 1...0)
-	// 	{
-	// 		var tempFlake:BGFlake = bgFlakes.members[i];
-	// 		trace(tempFlake);
-	// 		trace(tempFlake.pretty_print());
-	// 		if (!tempFlake.exists)
-	// 		{
-	// 			bgFlakes.remove(tempFlake, true);
-	// 		}
-	// 	}
-	// }
+		super.update(elapsed);
+	}
 
 	public function decreaseBGFlakes()
 	{
-		flakeCount--;
+		bgFlakeCount--;
 	}
 }

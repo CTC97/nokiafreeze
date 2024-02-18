@@ -30,6 +30,8 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     private var flakeIndex:Int;
 
+    private var belowScreen = false;
+
 	public function new(?fIndex = -1, ?sIndex = -1)
 	{
 		super();
@@ -44,7 +46,9 @@ class Flake extends FlxTypedGroup<FlxSprite>
         while((Math.abs(Main.lastFlakeSpawnX - xBase) < Main.SCALE * 16)){
             xBase = random.int(1, 70) * Main.SCALE;
         }
-        yBase = Main.SCALE * -15;
+        //yBase = Main.SCALE * -10;
+        yBase = 0;
+        //xBase = 0;
         Main.lastFlakeSpawnX = xBase;
 
         angle = Main.VALID_ROTATIONS[random.int(0, 3)];
@@ -54,7 +58,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
         
         flakeBase = new FlxSprite(xBase, yBase);
         flakeBase.loadGraphic(Main.BASEFLAKES[flakeIndex], false, flakeWidth, flakeHeight);
-        flakeBase.angle = angle;
+        //flakeBase.angle = angle;
         add(flakeBase);
 
         
@@ -64,34 +68,51 @@ class Flake extends FlxTypedGroup<FlxSprite>
         spineDimensions = Main.SPINE_SIZES[spineIndex];
         spines = new FlxSprite((xBase + (flakeWidth/2)) - ((spineDimensions[0])/2), (yBase + (flakeHeight/2)) - ((spineDimensions[1])/2));
         spines.loadGraphic(Main.SPINES[spineIndex], false, spineDimensions[0], spineDimensions[1]);
-        spines.angle = angle;
+        //spines.angle = angle;
         add(spines);
 
         //spines = new FlxSprite();
 
         updateToggle = 0;
+
+        trace('added at $xBase, $yBase');
 	}
 
-	public function updateFlake() {
+	public function updateFlake(elapsed) {
         // xBase++;
 		// flakeBase.x = xBase;
+        updateToggle++;
         if (updateToggle >= updateToggleLength) {
             flakeBase.y += Main.SCALE;
+            flakeBase.update(elapsed);
             spines.y += Main.SCALE;
+            spines.update(elapsed);
             updateToggle = 0;
         }
+        
+        /*updateToggle = 0;
 
-        updateToggle++;
+        updateToggle++;*/
 
         if (flakeBase.y >= (Main.SCALE * 48) + Main.SCALE * 20) {
             flakeBase.kill();
             spines.kill();
             flakeBase.exists = false;
             spines.exists = false;
+            belowScreen = true;
+            //trace("KILLING FLAKE");
         }
 	}
 
     public function getSprites() {
         return [flakeIndex, spineIndex];
+    }
+
+    public function getBelowScreen() {
+		return belowScreen;
+	}
+
+    public function returnCoordinatesForCenterSelector() {
+        return [(xBase + spineDimensions[0] / 2) - 80, (yBase + spineDimensions[1] / 2) - 72];
     }
 }
