@@ -42,12 +42,13 @@ class Flake extends FlxTypedGroup<FlxSprite>
 		random = new FlxRandom();
         updateToggleLength = Std.int(random.int(40, 80) / 8); // need to play around with this to get rid of glitchy overlaps
 
-        xBase = random.int(1, 70) * Main.SCALE;
-        while((Math.abs(Main.lastFlakeSpawnX - xBase) < Main.SCALE * 16)){
-            xBase = random.int(1, 70) * Main.SCALE;
+        xBase = random.int(26, 45) * Main.SCALE;
+        trace("SPAWNING AT ", xBase);
+        while((Math.abs(Main.lastFlakeSpawnX - xBase) < Main.SCALE * 8)){
+            xBase = random.int(26, 45) * Main.SCALE;
         }
-        //yBase = Main.SCALE * -10;
-        yBase = 0;
+        yBase = Main.SCALE * -16;
+       // yBase = 0;
         //xBase = 0;
         Main.lastFlakeSpawnX = xBase;
 

@@ -79,7 +79,7 @@ class PlayState extends FlxState
 		if (bgFlakeCount < maxBgFlakes)
 		{
 			bgFlakeCount++;
-			bgFlakes.add(new BGFlake(this, random.int(0, 84) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+			bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
 		}
 
 		for (flake in flakes) {
