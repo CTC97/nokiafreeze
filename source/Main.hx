@@ -44,5 +44,7 @@ class Main extends Sprite
 		super();
 		addChild(new FlxGame(0, 0, PlayState, true));
 		FlxG.mouse.visible = false;
+
+		FlxAssets.FONT_DEFAULT = "assets/nokiafc22.ttf";
 	}
 }

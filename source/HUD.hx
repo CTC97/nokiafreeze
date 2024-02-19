@@ -1,5 +1,6 @@
 package;
 
+import flixel.text.FlxText;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets;
@@ -22,6 +23,12 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
     private var targetCharBox:CharacteristicBar;
     private var selectedCharBox:CharacteristicBar;
+
+    private var targetLabel:FlxText;
+    private var selectedLabel:FlxText;
+
+    private var targetFrostinessLabel:FlxText;
+    private var selectedFrostinessLabel:FlxText;
 
 	public function new(s:Selector, f:Flake)
 	{
@@ -46,13 +53,29 @@ class HUD extends FlxTypedGroup<FlxSprite>
         targetFlakeBase = new FlxSprite(targetBox.x + 0.5*(20 * Main.SCALE - 96), targetBox.y + 0.5*(18 * Main.SCALE - 96));
         targetFlakeSpine = new FlxSprite(targetBox.x + 0.5*(20 * Main.SCALE - targetFlake.getSpineDimensions()[0]), targetBox.y + 0.5*(18 * Main.SCALE - targetFlake.getSpineDimensions()[1]));
 
-        targetCharBox = new CharacteristicBar(Main.SCALE, Main.SCALE * (48) - (18 * Main.SCALE) - 64);
+        targetCharBox = new CharacteristicBar(Main.SCALE, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24);
         add(targetCharBox);
 
-        selectedCharBox = new CharacteristicBar((Main.SCALE * (84 - 1)) - (20 * Main.SCALE),  Main.SCALE * (48) - (18 * Main.SCALE) - 64);
+        selectedCharBox = new CharacteristicBar((Main.SCALE * (84 - 1)) - (20 * Main.SCALE),  Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24);
         add(selectedCharBox);
 
         shownSelected = false;
+
+        targetLabel = new FlxText(8, targetBox.y - 28, 160, "FLAKE:", 16, true);
+        targetLabel.color = 0xc7f0d8;
+        add(targetLabel);
+
+        selectedLabel = new FlxText((Main.SCALE * 84) - 160 - 8, targetBox.y - 28, 160, "FLAKE:", 16, true);
+        selectedLabel.color = 0xc7f0d8;
+        add(selectedLabel);
+
+        targetFrostinessLabel = new FlxText(8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
+        targetFrostinessLabel.color = 0xc7f0d8;
+        add(targetFrostinessLabel);
+
+        selectedFrostinessLabel = new FlxText((Main.SCALE * 84) - 160 - 8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
+        selectedFrostinessLabel.color = 0xc7f0d8;
+        add(selectedFrostinessLabel);
     }
 
     public function displayTargetFlake(flake:Flake) {
