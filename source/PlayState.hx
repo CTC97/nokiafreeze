@@ -113,7 +113,7 @@ class PlayState extends FlxState
 			moveSelector("up");
 			newTarget();
 			score += 1;
-			scoreText.text = 'Score: $score';
+			scoreText.text = 'SCORE: $score';
 		} else if (e) {
 			life -= 1;
 			lifeText.text = 'LIFE: $life';
