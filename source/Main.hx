@@ -8,14 +8,15 @@ import openfl.display.Sprite;
 class Main extends Sprite
 {
 	public static var SCALE:Int = 8;
+	public static var TEXT_COLOR = 0xc7f0d8;
 	public static var BASEFLAKES:Array<FlxGraphicAsset> = [
 		AssetPaths.flakebaseone__png,
 		AssetPaths.flakebasetwo__png,
-		AssetPaths.flakebasethree__png,
+		//AssetPaths.flakebasethree__png,
 		AssetPaths.flakebasefour__png,
 		AssetPaths.flakebasefive__png,
 		AssetPaths.flakebasesix__png,
-		AssetPaths.flakebaseseven__png,
+		//AssetPaths.flakebaseseven__png,
 		AssetPaths.flakebaseeight__png,
 		AssetPaths.flakebasenine__png,
 		AssetPaths.flakebaseten__png,

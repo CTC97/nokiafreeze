@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxRandom;
 import flixel.text.FlxText;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -30,12 +31,20 @@ class HUD extends FlxTypedGroup<FlxSprite>
     private var targetFrostinessLabel:FlxText;
     private var selectedFrostinessLabel:FlxText;
 
+    private var random:FlxRandom;
+
+    private var firstTarget:Bool;
+
 	public function new(s:Selector, f:Flake)
 	{
 		super();
 
         selector = s;
         targetFlake = f;
+
+        random = new FlxRandom();
+
+        firstTarget = true;
 
         targetBox = new FlxSprite(Main.SCALE, Main.SCALE * (48 - 1) - (18 * Main.SCALE));
         targetBox.loadGraphic(AssetPaths.uibox__png, false, 20 * Main.SCALE, 18 * Main.SCALE);
@@ -62,30 +71,43 @@ class HUD extends FlxTypedGroup<FlxSprite>
         shownSelected = false;
 
         targetLabel = new FlxText(8, targetBox.y - 28, 160, "FLAKE:", 16, true);
-        targetLabel.color = 0xc7f0d8;
+        targetLabel.color = Main.TEXT_COLOR;
         add(targetLabel);
 
         selectedLabel = new FlxText((Main.SCALE * 84) - 160 - 8, targetBox.y - 28, 160, "FLAKE:", 16, true);
-        selectedLabel.color = 0xc7f0d8;
+        selectedLabel.color = Main.TEXT_COLOR;
         add(selectedLabel);
 
         targetFrostinessLabel = new FlxText(8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
-        targetFrostinessLabel.color = 0xc7f0d8;
+        targetFrostinessLabel.color = Main.TEXT_COLOR;
         add(targetFrostinessLabel);
 
         selectedFrostinessLabel = new FlxText((Main.SCALE * 84) - 160 - 8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
-        selectedFrostinessLabel.color = 0xc7f0d8;
+        selectedFrostinessLabel.color = Main.TEXT_COLOR;
         add(selectedFrostinessLabel);
     }
 
     public function displayTargetFlake(flake:Flake) {
+
+        remove(targetFlakeSpine);
+        remove(targetFlakeBase);
+        
         targetFlake = flake;
 
         var sprites:Array<Int> = flake.getSprites();
         var base:Int = sprites[0];
         var spine:Int = sprites[1];
 
-        targetFlakeBase.loadGraphic(Main.BASEFLAKES[base]);
+        targetFlakeBase.loadGraphic(Main.BASEFLAKES[base], true, 96, 96);
+        var blinkArray:Array<Int> = [];
+        for (i in 0...2) {
+            for (i in 0...random.int(4, 8)) {blinkArray.push(0);}
+            blinkArray.push(1);
+        }
+        targetFlakeBase.animation.add("blink", blinkArray, 4, true);
+        targetFlakeBase.animation.play("blink");
+
+        targetFlakeSpine = new FlxSprite(targetBox.x + 0.5*(20 * Main.SCALE - flake.getSpineDimensions()[0]), targetBox.y + 0.5*(18 * Main.SCALE - flake.getSpineDimensions()[1]));
         targetFlakeSpine.loadGraphic(Main.SPINES[spine]);
 
         add(targetFlakeBase);
@@ -103,7 +125,14 @@ class HUD extends FlxTypedGroup<FlxSprite>
         }
         shownSelected = true;
         selectedFlakeBase = new FlxSprite(selectBox.x + 0.5*(20 * Main.SCALE - 96), selectBox.y + 0.5*(18 * Main.SCALE - 96));
-        selectedFlakeBase.loadGraphic(Main.BASEFLAKES[base]);
+        selectedFlakeBase.loadGraphic(Main.BASEFLAKES[base], true, 96, 96);
+        var blinkArray:Array<Int> = [];
+        for (i in 0...2) {
+            for (i in 0...random.int(4, 8)) {blinkArray.push(0);}
+            blinkArray.push(1);
+        }
+        selectedFlakeBase.animation.add("blink", blinkArray, 7, true);
+        selectedFlakeBase.animation.play("blink");
 
         selectedFlakeSpine = new FlxSprite(selectBox.x + 0.5*(20 * Main.SCALE - selector.getSelectedFlake().getSpineDimensions()[0]), selectBox.y + 0.5*(18 * Main.SCALE - selector.getSelectedFlake().getSpineDimensions()[1]));
         selectedFlakeSpine.loadGraphic(Main.SPINES[spine]);

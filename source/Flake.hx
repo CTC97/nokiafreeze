@@ -60,9 +60,20 @@ class Flake extends FlxTypedGroup<FlxSprite>
         else flakeIndex = fIndex;
         
         flakeBase = new FlxSprite(xBase, yBase);
-        flakeBase.loadGraphic(Main.BASEFLAKES[flakeIndex], false, flakeWidth, flakeHeight);
+        flakeBase.loadGraphic(Main.BASEFLAKES[flakeIndex], true, flakeWidth, flakeHeight);
+
+        var blinkArray:Array<Int> = [];
+        for (i in 0...2) {
+            for (i in 0...random.int(4, 8)) {blinkArray.push(0);}
+            blinkArray.push(1);
+        }
+       // trace(blinkArray);
+
+        flakeBase.animation.add("blink", blinkArray, 4, true);
+        
         //flakeBase.angle = angle;
         add(flakeBase);
+        flakeBase.animation.play("blink");
 
         
         if (sIndex == -1) spineIndex = Std.int(Math.pow(random.int(0, Main.SPINES.length-1), 3) % Main.SPINES.length);
@@ -135,5 +146,9 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     public function getCharacteristicVal() {
         return characteristicVal;
+    }
+
+    public function getGenetics() {
+        return [flakeIndex, spineIndex, Std.parseInt(characteristicVal)];
     }
 }

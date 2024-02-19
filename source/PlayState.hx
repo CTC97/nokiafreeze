@@ -35,6 +35,15 @@ class PlayState extends FlxState
     private var down:Bool = false;
     private var left:Bool = false;
     private var right:Bool = false;
+	private var e:Bool = false;
+
+	private var score:Int;
+	private var scoreText:FlxText;
+
+	private var life:Int;
+	private var lifeText:FlxText;
+
+	private var spawnedTarget:Bool = false;
 
 	override public function create()
 	{
@@ -48,7 +57,7 @@ class PlayState extends FlxState
 		flakes = new FlxTypedGroup<Flake>();
 		add(flakes);
 
-		maxBgFlakes = 32;
+		maxBgFlakes = 10;
 		bgFlakeCount = 0;
 
 		random = new FlxRandom();
@@ -63,6 +72,18 @@ class PlayState extends FlxState
 
 		elapsedCount = 0;
 
+		score = 0;
+		scoreText = new FlxText(8, 8, 160, 'SCORE: $score', 16, true);
+		scoreText.color = Main.TEXT_COLOR;
+		add(scoreText);
+
+		life = 3;
+		lifeText = new FlxText(8, 32, 160, 'LIFE: $life', 16, true);
+		lifeText.color = Main.TEXT_COLOR;
+		add(lifeText);
+
+		flakes.add(new Flake());
+
 		super.create();
 	}
 
@@ -72,21 +93,53 @@ class PlayState extends FlxState
 		//trace(elapsed, elapsedCount);
 
 		manageInput();
+
+		// if (flakes.length == 1) {
+		// 	flakes.add(new Flake());
+		// }
+
+		e = FlxG.keys.justPressed.SPACE;
+
+		/*if (e) {
+			trace(selector.getSelectedFlake().getGenetics(), " | ", targetFlake.getGenetics(), " | ", selector.getSelectedFlake().getGenetics() == targetFlake.getGenetics(), " | ");
+
+		}*/
+
+		if (selector.getSelectedFlake() != null 
+		&& targetFlake != null 
+		&& e 
+		&& checkGenetics(targetFlake.getGenetics(), selector.getSelectedFlake().getGenetics())) {
+			trace("HIT");
+			moveSelector("up");
+			newTarget();
+			score += 1;
+			scoreText.text = 'Score: $score';
+		} else if (e) {
+			life -= 1;
+			lifeText.text = 'LIFE: $life';
+		}
 		
 		hud.updateCharacteristicBox(targetFlake, selector.getSelectedFlake());
 
 		elapsedCount += elapsed;
 
 		if (elapsedCount > 1) {
-			var tempFlake:Flake = new Flake();
-			trace("ADDING new flake with char ", tempFlake.getCharacteristicVal());
 
-			if (!selector.getOnFlake()) {
-				selector.setSelectedFlake(tempFlake);
-				hud.displaySelectedFlake(selector.getSelectedFlake());
+			var spawnTarget:Int = random.int(0, 8);
+			if (!spawnedTarget && spawnTarget == 4) {
+				flakes.add(targetFlake);
+				spawnedTarget = true;
+				trace("ADDING TARGET NOW!");
+			} else {
+				var tempFlake:Flake = new Flake();
+
+				if (!selector.getOnFlake()) {
+					selector.setSelectedFlake(tempFlake);
+					hud.displaySelectedFlake(selector.getSelectedFlake());
+				}
+
+				flakes.add(tempFlake);
 			}
-
-			flakes.add(tempFlake);
 			elapsedCount = 0;
 		}
 		//flakeCooldown--;
@@ -102,10 +155,25 @@ class PlayState extends FlxState
 			flake.updateFlake(elapsed);
 			//trace(flakes.length);
 			if (flake.getBelowScreen() == true) {
+				if (checkGenetics(flake.getGenetics(), targetFlake.getGenetics())) {
+					trace("NEGATIVE!!!");
+					life -= 1;
+					lifeText.text = 'LIFE: $life';
+					newTarget();
+				}
 				flakes.remove(flake, true);
 				//trace('removed -> ', flakes.length);
 			}
 		}
+
+		if (selector.y > 48 * Main.SCALE) moveSelector("up");
+	}
+
+	private function newTarget() {
+		spawnedTarget = false;
+		flakes.remove(targetFlake);
+		targetFlake = new Flake();
+		hud.displayTargetFlake(targetFlake);
 	}
 
 	private function manageInput() {
@@ -126,44 +194,54 @@ class PlayState extends FlxState
 	}
 
 	private function moveSelector(direction:String) {
-		trace("MOVE SELECTOR ", direction);
+		//trace("MOVE SELECTOR ", direction);
 
-		var selectedFlake:Flake = selector.getSelectedFlake();
-		var closestFlake:Flake = null;
-		var closestDistance:Float = Math.POSITIVE_INFINITY;
+		if (flakes.length > 1) {
+			var selectedFlake:Flake = selector.getSelectedFlake();
+			var closestFlake:Flake = null;
+			var closestDistance:Float = Math.POSITIVE_INFINITY;
 
-		var found:Bool = false;
+			var found:Bool = false;
 
-		trace('entering loop');
-		for (flake in flakes) {
-			var validCheck:Bool = false;
+			//trace('entering loop');
+			for (flake in flakes) {
+				var validCheck:Bool = false;
 
-			validCheck = (direction == "up" && flake.getY() < selectedFlake.getY()) || 
-				(direction == "down" && flake.getY() > selectedFlake.getY()) ||
-				(direction == "left" && flake.getX() < selectedFlake.getX()) || 
-				(direction == "right" && flake.getX() > selectedFlake.getX());
+				validCheck = (direction == "up" && flake.getY() < selectedFlake.getY()) || 
+					(direction == "down" && flake.getY() > selectedFlake.getY()) ||
+					(direction == "left" && flake.getX() < selectedFlake.getX()) || 
+					(direction == "right" && flake.getX() > selectedFlake.getX());
 
-			if (validCheck) {
-				trace('valid Check!');
+				if (validCheck) {
+					//trace('valid Check!');
 
-				// var distance:Float = Math.POSITIVE_INFINITY;
-				// if (direction == "up" || direction == "down") distance = Math.abs(flake.getY() - selectedFlake.getY());
-				// if (direction == "right" || direction == "left") distance = Math.abs(flake.getX() - selectedFlake.getX());
+					// var distance:Float = Math.POSITIVE_INFINITY;
+					// if (direction == "up" || direction == "down") distance = Math.abs(flake.getY() - selectedFlake.getY());
+					// if (direction == "right" || direction == "left") distance = Math.abs(flake.getX() - selectedFlake.getX());
 
-				var distance:Float = Math.sqrt(Math.pow((flake.getX() - selectedFlake.getX()), 2) + Math.pow((flake.getY() - selectedFlake.getY()), 2));
-				if (distance < closestDistance) {
-					 closestFlake = flake; 
-					 closestDistance = distance;
-				}
+					var distance:Float = Math.sqrt(Math.pow((flake.getX() - selectedFlake.getX()), 2) + Math.pow((flake.getY() - selectedFlake.getY()), 2));
+					if (distance < closestDistance) {
+						closestFlake = flake; 
+						closestDistance = distance;
+					}
 
-				found = true;
-			} else continue;
+					found = true;
+				} else continue;
+			}
+
+			if (found) {
+				//trace('found valid sprite at ', closestFlake.getX(), closestFlake.getY()); 
+				selector.setSelectedFlake(closestFlake);
+				hud.displaySelectedFlake(selector.getSelectedFlake());
+			}
 		}
+	}
 
-		if (found) {
-			trace('found valid sprite at ', closestFlake.getX(), closestFlake.getY()); 
-			selector.setSelectedFlake(closestFlake);
-			hud.displaySelectedFlake(selector.getSelectedFlake());
+	private function checkGenetics(target:Array<Int>, selected:Array<Int>) {
+		//trace(target, selected);
+		for (i in 0...target.length) {
+			if (target[i] != selected[i]) return false;
 		}
+		return true;
 	}
 }
