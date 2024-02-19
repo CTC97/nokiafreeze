@@ -49,7 +49,7 @@ class BGFlake extends FlxSprite
 		// slow down update speed for these snowflakes
 		updateToggle++;
 
-		if (updateToggle >= 2)
+		if (updateToggle >= 3)
 		{
 			updateToggle = 0;
 			// lateralWiggleToggle = !lateralWiggleToggle;

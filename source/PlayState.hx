@@ -57,7 +57,7 @@ class PlayState extends FlxState
 		flakes = new FlxTypedGroup<Flake>();
 		add(flakes);
 
-		maxBgFlakes = 10;
+		maxBgFlakes = 16;
 		bgFlakeCount = 0;
 
 		random = new FlxRandom();
@@ -125,6 +125,7 @@ class PlayState extends FlxState
 
 		if (elapsedCount > 1) {
 
+			// use this to change difficulty
 			var spawnTarget:Int = random.int(0, 8);
 			if (!spawnedTarget && spawnTarget == 4) {
 				flakes.add(targetFlake);
@@ -148,7 +149,8 @@ class PlayState extends FlxState
 		if (bgFlakeCount < maxBgFlakes)
 		{
 			bgFlakeCount++;
-			bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+			//bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+			bgFlakes.add(new BGFlake(this, random.int(0, 83) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
 		}
 
 		for (flake in flakes) {
