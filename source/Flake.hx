@@ -42,6 +42,9 @@ class Flake extends FlxTypedGroup<FlxSprite>
         flakeHeight = 96;
 
 		random = new FlxRandom();
+
+        // MODERATE THIS BASED ON PLAY STATE SCORE
+
         updateToggleLength = Std.int(random.int(40, 80) / 12); // need to play around with this to get rid of glitchy overlaps
 
         xBase = random.int(26, 45) * Main.SCALE;
@@ -110,7 +113,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
         updateToggle++;*/
 
-        if (flakeBase.y >= (Main.SCALE * 48) + Main.SCALE * 20) {
+        if (flakeBase.y >= (Main.SCALE * 48) + Main.SCALE * 8) {
             flakeBase.kill();
             spines.kill();
             flakeBase.exists = false;

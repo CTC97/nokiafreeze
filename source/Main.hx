@@ -1,5 +1,6 @@
 package;
 
+import flixel.sound.FlxSound;
 import flixel.FlxG;
 import flixel.FlxGame;
 import flixel.system.FlxAssets;
@@ -10,6 +11,7 @@ class Main extends Sprite
 	public static var SCALE:Int = 8;
 	public static var TEXT_COLOR = 0xc7f0d8;
 	public static var BASEFLAKES:Array<FlxGraphicAsset> = [
+		AssetPaths.flakebasezero__png,
 		AssetPaths.flakebaseone__png,
 		AssetPaths.flakebasetwo__png,
 		//AssetPaths.flakebasethree__png,
@@ -40,6 +42,10 @@ class Main extends Sprite
 
 	public static var lastFlakeSpawnX:Int = -1;
 
+	public static var moveSound:FlxSound;
+	public static var missSound:FlxSound;
+	public static var hitSound:FlxSound;
+
 	public function new()
 	{
 		super();
@@ -47,5 +53,11 @@ class Main extends Sprite
 		FlxG.mouse.visible = false;
 
 		FlxAssets.FONT_DEFAULT = "assets/nokiafc22.ttf";
+	}
+
+	public static function defineSounds() {
+		moveSound = FlxG.sound.load(AssetPaths.move__wav);
+		missSound = FlxG.sound.load(AssetPaths.miss__wav);
+		hitSound = FlxG.sound.load(AssetPaths.success__wav);
 	}
 }

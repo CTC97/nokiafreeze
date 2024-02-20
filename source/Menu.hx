@@ -24,6 +24,8 @@ class Menu extends FlakeState
 
 	override public function create()
 	{
+        Main.defineSounds();
+
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
         onPlay = true;
         select = false;
@@ -65,6 +67,7 @@ class Menu extends FlakeState
         select = FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE;
 
         if (moveSelector) {
+            Main.moveSound.play();
             menuSelector.animation.play("blink");
             if (onPlay) menuSelector.y = 298;
             else menuSelector.y = 252;

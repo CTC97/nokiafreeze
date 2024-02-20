@@ -54,13 +54,14 @@ class PlayState extends FlakeState
 
 	override public function create()
 	{
+		Main.defineSounds();
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
 
 		gameOverSprite = new FlxSprite(0, 0).loadGraphic(AssetPaths.gameover__png, false, 672, 384);
 
-		elapsedLimit = 2;
+		elapsedLimit = 1.5;
 
 		bgFlakes = new FlxTypedGroup<BGFlake>();
 		add(bgFlakes);
@@ -143,6 +144,7 @@ class PlayState extends FlakeState
 		&& targetFlake != null 
 		&& e 
 		&& checkGenetics(targetFlake.getGenetics(), selector.getSelectedFlake().getGenetics(), true)) {
+			Main.hitSound.play();
 			trace("HIT");
 			moveSelector("up");
 			newTarget();
@@ -150,6 +152,7 @@ class PlayState extends FlakeState
 			var loveQuip:Int = random.int(0, 4);
 			scoreText.text = 'SCORE: $score';
 		} else if (e) {
+			Main.missSound.play();
 			life -= 1;
 			lifeText.text = 'LIFE: $life';
 		}
@@ -158,9 +161,11 @@ class PlayState extends FlakeState
 
 		elapsedCount += elapsed;
 
-		if (score > 3) elapsedLimit = 1.5;
+		if (score > 3) elapsedLimit = 1.2;
 		if (score > 6) elapsedLimit = 1;
-		if (score > 9) elapsedLimit = 0.75;
+		if (score > 9) elapsedLimit = 0.8;
+		if (score > 12) elapsedLimit = 0.5;
+		if (score > 15) elapsedLimit = 0.2;
 
 		if (elapsedCount > elapsedLimit) {
 			trace("HERE");
@@ -174,6 +179,11 @@ class PlayState extends FlakeState
 				flakes.add(targetFlake);
 				spawnedTarget = true;
 				trace("ADDING TARGET NOW!");
+
+				if (!selector.getOnFlake()) {
+					selector.setSelectedFlake(targetFlake);
+					hud.displaySelectedFlake(selector.getSelectedFlake());
+				}
 			} else {
 				elapsedSinceTargetSpawn += 1;
 				var tempFlake:Flake = new Flake();
@@ -195,6 +205,7 @@ class PlayState extends FlakeState
 			if (flake.getBelowScreen() == true) {
 				if (checkGenetics(flake.getGenetics(), targetFlake.getGenetics())) {
 					trace("NEGATIVE!!!");
+					Main.missSound.play();
 					life -= 1;
 					lifeText.text = 'LIFE: $life';
 					newTarget();
@@ -228,6 +239,8 @@ class PlayState extends FlakeState
 
 	private function moveSelector(direction:String) {
 		//trace("MOVE SELECTOR ", direction);
+		trace("PLAYING");
+		Main.moveSound.play(true);
 
 		if (flakes.length > 1) {
 			var selectedFlake:Flake = selector.getSelectedFlake();
@@ -275,6 +288,7 @@ class PlayState extends FlakeState
 		for (i in 0...target.length) {
 			if (target[i] != selected[i]) {
 				if (onPlayerCheck) {
+					Main.missSound.play();
 					if (i == 0 || i == 1) hud.addQuipBubble("2");
 					else if (target[i] < selected[i]) hud.addQuipBubble("1");
 					else if (target[i] > selected[i]) hud.addQuipBubble("0");
