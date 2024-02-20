@@ -42,7 +42,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
         flakeHeight = 96;
 
 		random = new FlxRandom();
-        updateToggleLength = Std.int(random.int(40, 80) / 8); // need to play around with this to get rid of glitchy overlaps
+        updateToggleLength = Std.int(random.int(40, 80) / 12); // need to play around with this to get rid of glitchy overlaps
 
         xBase = random.int(26, 45) * Main.SCALE;
         //trace("SPAWNING AT ", xBase);

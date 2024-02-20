@@ -17,7 +17,7 @@ class Main extends Sprite
 		AssetPaths.flakebasefive__png,
 		AssetPaths.flakebasesix__png,
 		//AssetPaths.flakebaseseven__png,
-		AssetPaths.flakebaseeight__png,
+		//AssetPaths.flakebaseeight__png,
 		AssetPaths.flakebasenine__png,
 		AssetPaths.flakebaseten__png,
 		AssetPaths.flakebaseeleven__png,

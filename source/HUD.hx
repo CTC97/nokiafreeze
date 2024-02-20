@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxTween;
 import flixel.math.FlxRandom;
 import flixel.text.FlxText;
 import flixel.FlxSprite;
@@ -34,6 +35,8 @@ class HUD extends FlxTypedGroup<FlxSprite>
     private var random:FlxRandom;
 
     private var firstTarget:Bool;
+
+    private var quipBubble:QuipBubble;
 
 	public function new(s:Selector, f:Flake)
 	{
@@ -144,5 +147,23 @@ class HUD extends FlxTypedGroup<FlxSprite>
     public function updateCharacteristicBox(targetFlake:Flake, selectedFlake:Flake) {
         targetCharBox.setValue(targetFlake.getCharacteristicVal());
         if (selector.getOnFlake()) selectedCharBox.setValue(selectedFlake.getCharacteristicVal());
+    }
+
+    public function addQuipBubble(value) {
+        quipBubble = new QuipBubble(136, 288, value);
+        FlxTween.tween(quipBubble, {
+            alpha: 1,
+            exists:false,
+            alive:false,
+        }, 1.4);
+        add(quipBubble);
+    }
+
+    public function removeQuipBubble() {
+        remove(quipBubble);
+    }
+
+    public function getQuipBubble() {
+        return quipBubble;
     }
 }

@@ -22,8 +22,6 @@ class FlakeState extends FlxState
         super.update(elapsed);
     }
 
-
-
 	public function decreaseBGFlakes()
 	{
 		bgFlakeCount--;

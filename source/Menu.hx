@@ -65,6 +65,7 @@ class Menu extends FlakeState
         select = FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE;
 
         if (moveSelector) {
+            menuSelector.animation.play("blink");
             if (onPlay) menuSelector.y = 298;
             else menuSelector.y = 252;
 

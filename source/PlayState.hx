@@ -1,5 +1,7 @@
 package;
 
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -48,6 +50,7 @@ class PlayState extends FlakeState
 	private var gameOverSprite:FlxSprite;
 
 	private var spawnedTarget:Bool = false;
+	private var elapsedSinceTargetSpawn:Int;
 
 	override public function create()
 	{
@@ -73,8 +76,8 @@ class PlayState extends FlakeState
 		targetFlake = new Flake();
 		selector = new Selector();
 		hud = new HUD(selector, targetFlake);
-		add(hud);
 		add(selector);
+		add(hud);
 
 		hud.displayTargetFlake(targetFlake);
 
@@ -90,7 +93,12 @@ class PlayState extends FlakeState
 		lifeText.color = Main.TEXT_COLOR;
 		add(lifeText);
 
-		flakes.add(new Flake());
+		var firstFlake:Flake = new Flake();
+		flakes.add(firstFlake);
+		selector.setSelectedFlake(firstFlake);
+		hud.displaySelectedFlake(selector.getSelectedFlake());
+
+		elapsedSinceTargetSpawn = 0;
 
 		super.create();
 	}
@@ -102,6 +110,13 @@ class PlayState extends FlakeState
 		if (life <= 0 && !gameOver) {
 			gameOver = true;
 			add(gameOverSprite);
+		}
+
+		if (bgFlakeCount < maxBgFlakes)
+		{
+			bgFlakeCount++;
+			//bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+			bgFlakes.add(new BGFlake(this, random.int(0, 83) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
 		}
 
 		if (gameOver) {
@@ -127,11 +142,12 @@ class PlayState extends FlakeState
 		if (selector.getSelectedFlake() != null 
 		&& targetFlake != null 
 		&& e 
-		&& checkGenetics(targetFlake.getGenetics(), selector.getSelectedFlake().getGenetics())) {
+		&& checkGenetics(targetFlake.getGenetics(), selector.getSelectedFlake().getGenetics(), true)) {
 			trace("HIT");
 			moveSelector("up");
 			newTarget();
 			score += 1;
+			var loveQuip:Int = random.int(0, 4);
 			scoreText.text = 'SCORE: $score';
 		} else if (e) {
 			life -= 1;
@@ -150,11 +166,16 @@ class PlayState extends FlakeState
 			trace("HERE");
 			// use this to change difficulty
 			var spawnTarget:Int = random.int(0, 4);
+			if (elapsedSinceTargetSpawn >= 5) {
+				spawnTarget = 4;
+				elapsedSinceTargetSpawn = 0;
+			}
 			if (!spawnedTarget && spawnTarget == 4) {
 				flakes.add(targetFlake);
 				spawnedTarget = true;
 				trace("ADDING TARGET NOW!");
 			} else {
+				elapsedSinceTargetSpawn += 1;
 				var tempFlake:Flake = new Flake();
 
 				if (!selector.getOnFlake()) {
@@ -167,14 +188,6 @@ class PlayState extends FlakeState
 			elapsedCount = 0;
 		}
 		//flakeCooldown--;
-
-
-		if (bgFlakeCount < maxBgFlakes)
-		{
-			bgFlakeCount++;
-			//bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
-			bgFlakes.add(new BGFlake(this, random.int(0, 83) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
-		}
 
 		for (flake in flakes) {
 			flake.updateFlake(elapsed);
@@ -257,11 +270,19 @@ class PlayState extends FlakeState
 		}
 	}
 
-	private function checkGenetics(target:Array<Int>, selected:Array<Int>) {
+	private function checkGenetics(target:Array<Int>, selected:Array<Int>, ?onPlayerCheck:Bool=false) {
 		//trace(target, selected);
 		for (i in 0...target.length) {
-			if (target[i] != selected[i]) return false;
+			if (target[i] != selected[i]) {
+				if (onPlayerCheck) {
+					if (i == 0 || i == 1) hud.addQuipBubble("2");
+					else if (target[i] < selected[i]) hud.addQuipBubble("1");
+					else if (target[i] > selected[i]) hud.addQuipBubble("0");
+				}
+				return false;
+			}
 		}
 		return true;
 	}
+
 }
