@@ -14,12 +14,12 @@ class BGFlake extends FlxSprite
 	private var ySpeed:Int;
 	private var xDir:Bool;
 	private var random:FlxRandom;
-	private var playState:PlayState;
+	private var playState:FlakeState;
 
 	private var updateToggle:Int;
 	private var lateralWiggleToggle:Bool;
 
-	public function new(ps:PlayState, x:Int, y:Int)
+	public function new(ps:FlakeState, x:Int, y:Int)
 	{
 		super(x, y);
 

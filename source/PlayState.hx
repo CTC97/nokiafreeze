@@ -7,14 +7,14 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxRandom;
 import flixel.text.FlxText;
 
-class PlayState extends FlxState
+class PlayState extends FlakeState
 {
 	private var bg:FlxSprite;
 
-	private var maxBgFlakes:Int;
-	private var bgFlakeCount:Int;
+	//private var maxBgFlakes:Int;
+	//private var bgFlakeCount:Int;
 
-	private var bgFlakes:FlxTypedGroup<BGFlake>;
+	//private var bgFlakes:FlxTypedGroup<BGFlake>;
 
 	private var random:FlxRandom;
 
@@ -28,6 +28,7 @@ class PlayState extends FlxState
 	private var targetFlake:Flake;
 
 	private var elapsedCount:Float;
+	private var elapsedLimit:Float;
 
 	private var selector:Selector;
 
@@ -50,6 +51,8 @@ class PlayState extends FlxState
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
+
+		elapsedLimit = 2;
 
 		bgFlakes = new FlxTypedGroup<BGFlake>();
 		add(bgFlakes);
@@ -123,10 +126,14 @@ class PlayState extends FlxState
 
 		elapsedCount += elapsed;
 
-		if (elapsedCount > 1) {
+		if (score > 3) elapsedLimit = 1.5;
+		if (score > 6) elapsedLimit = 1;
+		if (score > 9) elapsedLimit = 0.75;
+
+		if (elapsedCount > elapsedLimit) {
 
 			// use this to change difficulty
-			var spawnTarget:Int = random.int(0, 8);
+			var spawnTarget:Int = random.int(0, 4);
 			if (!spawnedTarget && spawnTarget == 4) {
 				flakes.add(targetFlake);
 				spawnedTarget = true;
@@ -188,11 +195,6 @@ class PlayState extends FlxState
 		if (down) moveSelector("down");
 		if (left) moveSelector("left");
 		if (right) moveSelector("right");
-	}
-
-	public function decreaseBGFlakes()
-	{
-		bgFlakeCount--;
 	}
 
 	private function moveSelector(direction:String) {

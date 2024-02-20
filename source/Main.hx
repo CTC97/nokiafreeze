@@ -43,7 +43,7 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(0, 0, PlayState, true));
+		addChild(new FlxGame(0, 0, Menu, true));
 		FlxG.mouse.visible = false;
 
 		FlxAssets.FONT_DEFAULT = "assets/nokiafc22.ttf";
