@@ -44,6 +44,9 @@ class PlayState extends FlakeState
 	private var life:Int;
 	private var lifeText:FlxText;
 
+	private var gameOver:Bool;
+	private var gameOverSprite:FlxSprite;
+
 	private var spawnedTarget:Bool = false;
 
 	override public function create()
@@ -51,6 +54,8 @@ class PlayState extends FlakeState
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
+
+		gameOverSprite = new FlxSprite(0, 0).loadGraphic(AssetPaths.gameover__png, false, 672, 384);
 
 		elapsedLimit = 2;
 
@@ -93,6 +98,17 @@ class PlayState extends FlakeState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		
+		if (life <= 0 && !gameOver) {
+			gameOver = true;
+			add(gameOverSprite);
+		}
+
+		if (gameOver) {
+			if (FlxG.keys.justPressed.LEFT) FlxG.switchState(new Menu());
+			if (FlxG.keys.justPressed.RIGHT) FlxG.switchState(new PlayState());
+			return;
+		}
 		//trace(elapsed, elapsedCount);
 
 		manageInput();
@@ -131,7 +147,7 @@ class PlayState extends FlakeState
 		if (score > 9) elapsedLimit = 0.75;
 
 		if (elapsedCount > elapsedLimit) {
-
+			trace("HERE");
 			// use this to change difficulty
 			var spawnTarget:Int = random.int(0, 4);
 			if (!spawnedTarget && spawnTarget == 4) {
