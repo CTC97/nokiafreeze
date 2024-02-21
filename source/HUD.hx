@@ -38,6 +38,10 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
     private var quipBubble:QuipBubble;
 
+    private var labels:FlxSprite;
+
+    private var life:Life;
+
 	public function new(s:Selector, f:Flake)
 	{
 		super();
@@ -65,29 +69,36 @@ class HUD extends FlxTypedGroup<FlxSprite>
         targetFlakeBase = new FlxSprite(targetBox.x + 0.5*(20 * Main.SCALE - 96), targetBox.y + 0.5*(18 * Main.SCALE - 96));
         targetFlakeSpine = new FlxSprite(targetBox.x + 0.5*(20 * Main.SCALE - targetFlake.getSpineDimensions()[0]), targetBox.y + 0.5*(18 * Main.SCALE - targetFlake.getSpineDimensions()[1]));
 
-        targetCharBox = new CharacteristicBar(Main.SCALE, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24);
+        targetCharBox = new CharacteristicBar(Main.SCALE, 17*Main.SCALE);
         add(targetCharBox);
 
-        selectedCharBox = new CharacteristicBar((Main.SCALE * (84 - 1)) - (20 * Main.SCALE),  Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24);
+        selectedCharBox = new CharacteristicBar((Main.SCALE * (84 - 1)) - (20 * Main.SCALE), 17*Main.SCALE);
         add(selectedCharBox);
 
         shownSelected = false;
 
-        targetLabel = new FlxText(8, targetBox.y - 28, 160, "FLAKE:", 16, true);
-        targetLabel.color = Main.TEXT_COLOR;
-        add(targetLabel);
+        // targetLabel = new FlxText(8, targetBox.y - 28, 160, "FLAKE:", 16, true);
+        // targetLabel.color = Main.TEXT_COLOR;
+        // add(targetLabel);
 
-        selectedLabel = new FlxText((Main.SCALE * 84) - 160 - 8, targetBox.y - 28, 160, "FLAKE:", 16, true);
-        selectedLabel.color = Main.TEXT_COLOR;
-        add(selectedLabel);
+        // selectedLabel = new FlxText((Main.SCALE * 84) - 160 - 8, targetBox.y - 28, 160, "FLAKE:", 16, true);
+        // selectedLabel.color = Main.TEXT_COLOR;
+        // add(selectedLabel);
 
-        targetFrostinessLabel = new FlxText(8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
-        targetFrostinessLabel.color = Main.TEXT_COLOR;
-        add(targetFrostinessLabel);
+        // targetFrostinessLabel = new FlxText(8, 16*Main.SCALE, 160, "FROSTINESS:", 16, true);
+        // targetFrostinessLabel.color = Main.TEXT_COLOR;
+        // add(targetFrostinessLabel);
 
-        selectedFrostinessLabel = new FlxText((Main.SCALE * 84) - 160 - 8, Main.SCALE * (48) - (18 * Main.SCALE) - 64 - 24 - 28, 160, "FROSTINESS:", 16, true);
-        selectedFrostinessLabel.color = Main.TEXT_COLOR;
-        add(selectedFrostinessLabel);
+        // selectedFrostinessLabel = new FlxText((Main.SCALE * 84) - 160 - 8, 16 * Main.SCALE, 160, "FROSTINESS:", 16, true);
+        // selectedFrostinessLabel.color = Main.TEXT_COLOR;
+        // add(selectedFrostinessLabel);
+
+        labels = new FlxSprite(2*Main.SCALE, 12*Main.SCALE);
+        labels.loadGraphic(AssetPaths.labels__png, false, 632, 128);
+        add(labels);
+
+        life = new Life(2*Main.SCALE, 2*Main.SCALE);
+        add(life);
     }
 
     public function displayTargetFlake(flake:Flake) {
@@ -165,5 +176,9 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
     public function getQuipBubble() {
         return quipBubble;
+    }
+
+    public function setLifeValue(value:String) {
+        life.setValue(value);
     }
 }

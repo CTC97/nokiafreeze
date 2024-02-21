@@ -34,7 +34,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
     private var characteristicVal:String;
 
-	public function new(?fIndex = -1, ?sIndex = -1)
+	public function new(?speedCieling=80, ?speedFloor = 40)
 	{
 		super();
 
@@ -45,7 +45,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
         // MODERATE THIS BASED ON PLAY STATE SCORE
 
-        updateToggleLength = Std.int(random.int(40, 80) / 12); // need to play around with this to get rid of glitchy overlaps
+        updateToggleLength = Std.int(random.int(speedFloor, speedCieling) / 12); // need to play around with this to get rid of glitchy overlaps
 
         xBase = random.int(26, 45) * Main.SCALE;
         //trace("SPAWNING AT ", xBase);
@@ -59,8 +59,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
 
         angle = Main.VALID_ROTATIONS[random.int(0, 3)];
 
-        if (fIndex == -1) flakeIndex = random.int(0, Main.BASEFLAKES.length-1);
-        else flakeIndex = fIndex;
+        flakeIndex = random.int(0, Main.BASEFLAKES.length-1);
         
         flakeBase = new FlxSprite(xBase, yBase);
         flakeBase.loadGraphic(Main.BASEFLAKES[flakeIndex], true, flakeWidth, flakeHeight);
@@ -79,8 +78,7 @@ class Flake extends FlxTypedGroup<FlxSprite>
         flakeBase.animation.play("blink");
 
         
-        if (sIndex == -1) spineIndex = Std.int(Math.pow(random.int(0, Main.SPINES.length-1), 3) % Main.SPINES.length);
-        else spineIndex = sIndex;
+        spineIndex = Std.int(Math.pow(random.int(0, Main.SPINES.length-1), 3) % Main.SPINES.length);
        
         spineDimensions = Main.SPINE_SIZES[spineIndex];
         spines = new FlxSprite((xBase + (flakeWidth/2)) - ((spineDimensions[0])/2), (yBase + (flakeHeight/2)) - ((spineDimensions[1])/2));

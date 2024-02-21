@@ -31,6 +31,8 @@ class PlayState extends FlakeState
 
 	private var elapsedCount:Float;
 	private var elapsedLimit:Float;
+	private var speedCieling:Int;
+	private var speedFloor:Int;
 
 	private var selector:Selector;
 
@@ -41,16 +43,17 @@ class PlayState extends FlakeState
 	private var e:Bool = false;
 
 	private var score:Int;
-	private var scoreText:FlxText;
+	//private var scoreText:FlxText;
 
 	private var life:Int;
-	private var lifeText:FlxText;
+	//private var lifeText:FlxText;
 
 	private var gameOver:Bool;
 	private var gameOverSprite:FlxSprite;
 
 	private var spawnedTarget:Bool = false;
 	private var elapsedSinceTargetSpawn:Int;
+	private var targetSpawnThreshold:Int;
 
 	override public function create()
 	{
@@ -69,12 +72,15 @@ class PlayState extends FlakeState
 		flakes = new FlxTypedGroup<Flake>();
 		add(flakes);
 
-		maxBgFlakes = 16;
+		maxBgFlakes = 8;
 		bgFlakeCount = 0;
+
+		speedCieling = 70;
+		speedFloor = 40;
 
 		random = new FlxRandom();
 
-		targetFlake = new Flake();
+		targetFlake = new Flake(speedCieling, speedFloor);
 		selector = new Selector();
 		hud = new HUD(selector, targetFlake);
 		add(selector);
@@ -85,14 +91,14 @@ class PlayState extends FlakeState
 		elapsedCount = 0;
 
 		score = 0;
-		scoreText = new FlxText(8, 8, 160, 'SCORE: $score', 16, true);
-		scoreText.color = Main.TEXT_COLOR;
-		add(scoreText);
+		// scoreText = new FlxText(8, 8, 160, 'SCORE: $score', 16, true);
+		// scoreText.color = Main.TEXT_COLOR;
+		// add(scoreText);
 
 		life = 3;
-		lifeText = new FlxText(8, 32, 160, 'LIFE: $life', 16, true);
-		lifeText.color = Main.TEXT_COLOR;
-		add(lifeText);
+		// lifeText = new FlxText(8, 32, 160, 'LIFE: $life', 16, true);
+		// lifeText.color = Main.TEXT_COLOR;
+		// add(lifeText);
 
 		var firstFlake:Flake = new Flake();
 		flakes.add(firstFlake);
@@ -100,6 +106,8 @@ class PlayState extends FlakeState
 		hud.displaySelectedFlake(selector.getSelectedFlake());
 
 		elapsedSinceTargetSpawn = 0;
+
+		targetSpawnThreshold = random.int(4, 7);
 
 		super.create();
 	}
@@ -117,7 +125,7 @@ class PlayState extends FlakeState
 		{
 			bgFlakeCount++;
 			//bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
-			bgFlakes.add(new BGFlake(this, random.int(0, 83) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
+			bgFlakes.add(new BGFlake(this, random.int(22, 61) * Main.SCALE, -1 * random.int(0, 60) * Main.SCALE));
 		}
 
 		if (gameOver) {
@@ -150,30 +158,31 @@ class PlayState extends FlakeState
 			newTarget();
 			score += 1;
 			var loveQuip:Int = random.int(0, 4);
-			scoreText.text = 'SCORE: $score';
+			//scoreText.text = 'SCORE: $score';
 		} else if (e) {
 			Main.missSound.play();
 			life -= 1;
-			lifeText.text = 'LIFE: $life';
+			hud.setLifeValue('$life');
+			//lifeText.text = 'LIFE: $life';
 		}
 		
 		hud.updateCharacteristicBox(targetFlake, selector.getSelectedFlake());
 
 		elapsedCount += elapsed;
 
-		if (score > 3) elapsedLimit = 1.2;
-		if (score > 6) elapsedLimit = 1;
-		if (score > 9) elapsedLimit = 0.8;
-		if (score > 12) elapsedLimit = 0.5;
-		if (score > 15) elapsedLimit = 0.2;
+		if (score > 3) { elapsedLimit = 1.2; speedCieling = 70; speedFloor = 38;}
+		if (score > 6) { elapsedLimit = 1; speedCieling = 60; speedFloor = 34;}
+		if (score > 9) { elapsedLimit = 0.8; speedCieling = 50; speedFloor = 32;}
+		if (score > 12) { elapsedLimit = 0.5; speedCieling = 50; speedFloor = 30;}
 
 		if (elapsedCount > elapsedLimit) {
 			trace("HERE");
 			// use this to change difficulty
 			var spawnTarget:Int = random.int(0, 4);
-			if (elapsedSinceTargetSpawn >= 5) {
+			if (elapsedSinceTargetSpawn >= targetSpawnThreshold) {
 				spawnTarget = 4;
 				elapsedSinceTargetSpawn = 0;
+				targetSpawnThreshold = random.int(4,7);
 			}
 			if (!spawnedTarget && spawnTarget == 4) {
 				flakes.add(targetFlake);
@@ -186,7 +195,7 @@ class PlayState extends FlakeState
 				}
 			} else {
 				elapsedSinceTargetSpawn += 1;
-				var tempFlake:Flake = new Flake();
+				var tempFlake:Flake = new Flake(speedCieling, speedFloor);
 
 				if (!selector.getOnFlake()) {
 					selector.setSelectedFlake(tempFlake);
@@ -207,7 +216,8 @@ class PlayState extends FlakeState
 					trace("NEGATIVE!!!");
 					Main.missSound.play();
 					life -= 1;
-					lifeText.text = 'LIFE: $life';
+					hud.setLifeValue('$life');
+					//lifeText.text = 'LIFE: $life';
 					newTarget();
 				}
 				flakes.remove(flake, true);
@@ -221,7 +231,7 @@ class PlayState extends FlakeState
 	private function newTarget() {
 		spawnedTarget = false;
 		flakes.remove(targetFlake);
-		targetFlake = new Flake();
+		targetFlake = new Flake(speedCieling, speedFloor);
 		hud.displayTargetFlake(targetFlake);
 	}
 
