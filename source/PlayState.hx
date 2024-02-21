@@ -184,7 +184,7 @@ class PlayState extends FlakeState
 		trace(elapsedLimit);
 		// these numbers are ironically reversed
 		speedCieling = Std.int(70 - (1 * score));
-		speedFloor = Std.int(40 - (1 * score));
+		speedFloor = Std.int(Math.max(35, Std.int(40 - (1 * score))));
 		// if (score > 3) { //elapsedLimit = 1.2; 
 		// 	speedCieling = 70; speedFloor = 38;}
 		// if (score > 6) { //elapsedLimit = 1; 
@@ -326,8 +326,8 @@ class PlayState extends FlakeState
 				if (onPlayerCheck) {
 					//Main.playSounds("miss", "wrong");
 					if (i == 0 || i == 1) hud.addQuipBubble("2");
-					else if (target[i] < selected[i]) hud.addQuipBubble("1");
-					else if (target[i] > selected[i]) hud.addQuipBubble("0");
+					else if (target[i] < selected[i]) hud.addQuipBubble("0");
+					else if (target[i] > selected[i]) hud.addQuipBubble("1");
 				}
 				return false;
 			}
