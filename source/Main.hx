@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxRandom;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 import flixel.FlxGame;
@@ -43,8 +44,11 @@ class Main extends Sprite
 	public static var lastFlakeSpawnX:Int = -1;
 
 	public static var moveSound:FlxSound;
-	public static var missSound:FlxSound;
-	public static var hitSound:FlxSound;
+
+	private static var hitSounds:Array<FlxSound>;
+	private static var missSounds:Array<FlxSound>;
+
+	private static var random:FlxRandom;
 
 	public function new()
 	{
@@ -53,11 +57,28 @@ class Main extends Sprite
 		FlxG.mouse.visible = false;
 
 		FlxAssets.FONT_DEFAULT = "assets/nokiafc22.ttf";
+
+		random = new FlxRandom();
+
+		defineSounds();
 	}
 
 	public static function defineSounds() {
 		moveSound = FlxG.sound.load(AssetPaths.move__wav);
-		missSound = FlxG.sound.load(AssetPaths.miss__wav);
-		hitSound = FlxG.sound.load(AssetPaths.success__wav);
+		//missSound = FlxG.sound.load(AssetPaths.miss__wav);
+		//hitSound = FlxG.sound.load(AssetPaths.success__wav);
+
+		hitSounds = [FlxG.sound.load(AssetPaths.success__wav), FlxG.sound.load(AssetPaths.win1__wav)];
+		missSounds = [FlxG.sound.load(AssetPaths.miss__wav), FlxG.sound.load(AssetPaths.miss2__wav)];
+	} 
+
+	public static function playSounds(type:String, ?missType:String = "!") {
+		trace("SOUND PLAYING", type, missType);
+		if (type == "hit") {
+			hitSounds[random.int(0, 1)].play();
+		} else if (type == "miss" && missType != "!") {
+			if (missType == "wrong") missSounds[0].play();
+			if (missType == "miss") missSounds[1].play();
+		}
 	}
 }

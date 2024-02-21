@@ -62,7 +62,8 @@ class PlayState extends FlakeState
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
 
-		gameOverSprite = new FlxSprite(0, 0).loadGraphic(AssetPaths.gameover__png, false, 672, 384);
+		gameOverSprite = new FlxSprite(22*Main.SCALE, 12 * Main.SCALE).loadGraphic(AssetPaths.gameover__png, true, 40*Main.SCALE, 23*Main.SCALE);
+		gameOverSprite.animation.add("blink", [0,1], 2, false);
 
 		elapsedLimit = 1.5;
 
@@ -72,7 +73,7 @@ class PlayState extends FlakeState
 		flakes = new FlxTypedGroup<Flake>();
 		add(flakes);
 
-		maxBgFlakes = 8;
+		maxBgFlakes = 4;
 		bgFlakeCount = 0;
 
 		speedCieling = 70;
@@ -115,10 +116,17 @@ class PlayState extends FlakeState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		hud.setScoreNumbers(score);
 		
 		if (life <= 0 && !gameOver) {
 			gameOver = true;
 			add(gameOverSprite);
+			gameOverSprite.animation.play("blink");
+		}
+
+		if (gameOver) {
+			gameOverSprite.animation.play("blink");
 		}
 
 		if (bgFlakeCount < maxBgFlakes)
@@ -152,7 +160,7 @@ class PlayState extends FlakeState
 		&& targetFlake != null 
 		&& e 
 		&& checkGenetics(targetFlake.getGenetics(), selector.getSelectedFlake().getGenetics(), true)) {
-			Main.hitSound.play();
+			Main.playSounds("hit");
 			trace("HIT");
 			moveSelector("up");
 			newTarget();
@@ -160,7 +168,7 @@ class PlayState extends FlakeState
 			var loveQuip:Int = random.int(0, 4);
 			//scoreText.text = 'SCORE: $score';
 		} else if (e) {
-			Main.missSound.play();
+			Main.playSounds("miss", "wrong");
 			life -= 1;
 			hud.setLifeValue('$life');
 			//lifeText.text = 'LIFE: $life';
@@ -170,10 +178,19 @@ class PlayState extends FlakeState
 
 		elapsedCount += elapsed;
 
-		if (score > 3) { elapsedLimit = 1.2; speedCieling = 70; speedFloor = 38;}
-		if (score > 6) { elapsedLimit = 1; speedCieling = 60; speedFloor = 34;}
-		if (score > 9) { elapsedLimit = 0.8; speedCieling = 50; speedFloor = 32;}
-		if (score > 12) { elapsedLimit = 0.5; speedCieling = 50; speedFloor = 30;}
+		elapsedLimit = Math.max(0.67, 1.5 - (0.05 * score));
+		trace(elapsedLimit);
+		// these numbers are ironically reversed
+		speedCieling = Std.int(70 - (1 * score));
+		speedFloor = Std.int(40 - (1 * score));
+		// if (score > 3) { //elapsedLimit = 1.2; 
+		// 	speedCieling = 70; speedFloor = 38;}
+		// if (score > 6) { //elapsedLimit = 1; 
+		// 	speedCieling = 60; speedFloor = 34;}
+		// if (score > 9) { //elapsedLimit = 0.8;
+		// 	speedCieling = 50; speedFloor = 32;}
+		// if (score > 12) { //elapsedLimit = 0.5; 
+		// 	speedCieling = 50; speedFloor = 30;}
 
 		if (elapsedCount > elapsedLimit) {
 			trace("HERE");
@@ -195,7 +212,7 @@ class PlayState extends FlakeState
 				}
 			} else {
 				elapsedSinceTargetSpawn += 1;
-				var tempFlake:Flake = new Flake(speedCieling, speedFloor);
+				var tempFlake:Flake = new Flake(speedCieling, speedFloor, targetFlake.getBase(), targetFlake.getSpine(), Std.parseInt(targetFlake.getCharacteristicVal()));
 
 				if (!selector.getOnFlake()) {
 					selector.setSelectedFlake(tempFlake);
@@ -208,18 +225,26 @@ class PlayState extends FlakeState
 		}
 		//flakeCooldown--;
 
+		if (targetFlake.getBelowScreen()) {
+			trace("NEGATIVE!!!");
+			Main.playSounds("miss", "miss");
+			life -= 1;
+			hud.setLifeValue('$life');
+			newTarget();
+		}
+
 		for (flake in flakes) {
 			flake.updateFlake(elapsed);
 			//trace(flakes.length);
 			if (flake.getBelowScreen() == true) {
-				if (checkGenetics(flake.getGenetics(), targetFlake.getGenetics())) {
+				/*if (checkGenetics(flake.getGenetics(), targetFlake.getGenetics())) {
 					trace("NEGATIVE!!!");
-					Main.missSound.play();
+					Main.playSounds("miss", "miss");
 					life -= 1;
 					hud.setLifeValue('$life');
 					//lifeText.text = 'LIFE: $life';
 					newTarget();
-				}
+				}*/
 				flakes.remove(flake, true);
 				//trace('removed -> ', flakes.length);
 			}
@@ -249,7 +274,6 @@ class PlayState extends FlakeState
 
 	private function moveSelector(direction:String) {
 		//trace("MOVE SELECTOR ", direction);
-		trace("PLAYING");
 		Main.moveSound.play(true);
 
 		if (flakes.length > 1) {
@@ -298,7 +322,7 @@ class PlayState extends FlakeState
 		for (i in 0...target.length) {
 			if (target[i] != selected[i]) {
 				if (onPlayerCheck) {
-					Main.missSound.play();
+					//Main.playSounds("miss", "wrong");
 					if (i == 0 || i == 1) hud.addQuipBubble("2");
 					else if (target[i] < selected[i]) hud.addQuipBubble("1");
 					else if (target[i] > selected[i]) hud.addQuipBubble("0");

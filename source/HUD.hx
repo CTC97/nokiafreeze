@@ -42,6 +42,10 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
     private var life:Life;
 
+    private var numberOnes:Number;
+    private var numberTens:Number;
+    private var numberHundreds:Number;
+
 	public function new(s:Selector, f:Flake)
 	{
 		super();
@@ -99,6 +103,14 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
         life = new Life(2*Main.SCALE, 2*Main.SCALE);
         add(life);
+
+        numberOnes = new Number(77*Main.SCALE, 1*Main.SCALE, "0");
+        numberTens = new Number(71*Main.SCALE, 1*Main.SCALE, "0");
+        numberHundreds = new Number(65*Main.SCALE, 1*Main.SCALE, "0");
+
+        add(numberOnes);
+        add(numberTens);
+        add(numberHundreds);
     }
 
     public function displayTargetFlake(flake:Flake) {
@@ -180,5 +192,21 @@ class HUD extends FlxTypedGroup<FlxSprite>
 
     public function setLifeValue(value:String) {
         life.setValue(value);
+    }
+
+    public function setScoreNumbers(score:Int) {
+        if (score < 1000) {
+            var hundreds:Int = Std.int(score / 100);
+            var tens:Int = Std.int((score / 10) % 10);
+            var ones:Int = score % 10;
+
+            numberOnes.setValue('$ones');
+            numberTens.setValue('$tens');
+            numberHundreds.setValue('$hundreds');
+        } else {
+            numberOnes.setValue('x');
+            numberTens.setValue('x');
+            numberHundreds.setValue('x');
+        }
     }
 }
