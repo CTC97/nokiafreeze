@@ -54,6 +54,11 @@ class Menu extends FlakeState
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
+        if (FlxG.sound.music == null) // don't restart the music if it's already playing
+        {
+            FlxG.sound.playMusic(AssetPaths.theme__wav, 0.3, true);
+        }
+
         if (bgFlakeCount < maxBgFlakes)
         {
             bgFlakeCount++;
@@ -67,6 +72,7 @@ class Menu extends FlakeState
         select = FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE;
 
         if (moveSelector) {
+                
             Main.moveSound.play();
             menuSelector.animation.play("blink");
             if (onPlay) menuSelector.y = 298;
@@ -77,5 +83,7 @@ class Menu extends FlakeState
 
         if (select && onPlay) FlxG.switchState(new PlayState());
     }
+
+    
 
 }

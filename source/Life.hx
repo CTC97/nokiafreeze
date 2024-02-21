@@ -10,7 +10,7 @@ class Life extends FlxSprite
 	{
 		super(x, y);
 
-		loadGraphic(AssetPaths.life__png, true, 136, 32);
+		loadGraphic(AssetPaths.life__png, true, 136, 40);
         animation.add("3", [0], 1, false);
         animation.add("2", [1], 1, false);
         animation.add("1", [2], 1, false);

@@ -57,7 +57,9 @@ class PlayState extends FlakeState
 
 	override public function create()
 	{
+		FlxG.sound.pause();
 		Main.defineSounds();
+		Main.enterSound.play();
 		// BG is 672 x 384 - 800% scaling of required dimensions (84x48)
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);

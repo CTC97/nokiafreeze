@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxTween;
 import flixel.math.FlxRandom;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
@@ -44,15 +45,19 @@ class Main extends Sprite
 	public static var lastFlakeSpawnX:Int = -1;
 
 	public static var moveSound:FlxSound;
-
+	public static var enterSound:FlxSound;
 	private static var hitSounds:Array<FlxSound>;
 	private static var missSounds:Array<FlxSound>;
 
 	private static var random:FlxRandom;
 
+	private static var nothing:Int;
+
 	public function new()
 	{
 		super();
+		nothing = 0;
+
 		addChild(new FlxGame(0, 0, Menu, true));
 		FlxG.mouse.visible = false;
 
@@ -65,6 +70,7 @@ class Main extends Sprite
 
 	public static function defineSounds() {
 		moveSound = FlxG.sound.load(AssetPaths.move__wav);
+		enterSound = FlxG.sound.load(AssetPaths.enter__wav);
 		//missSound = FlxG.sound.load(AssetPaths.miss__wav);
 		//hitSound = FlxG.sound.load(AssetPaths.success__wav);
 
