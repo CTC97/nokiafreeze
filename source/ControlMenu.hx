@@ -17,6 +17,8 @@ class ControlMenu extends FlakeState
 
     private var backBlink:FlxSprite;
 
+    private var poofs:FlxTypedGroup<HeartPoof>;
+
 	override public function create()
 	{
         random = new FlxRandom();
@@ -30,10 +32,13 @@ class ControlMenu extends FlakeState
         bgFlakes = new FlxTypedGroup<BGFlake>();
 		add(bgFlakes);
 
+        poofs = new FlxTypedGroup<HeartPoof>();
+        add(poofs);
+
         controlOverlay = new FlxSprite(0, 0).loadGraphic(AssetPaths.controloverlay__png, false, 672, 384);
         add(controlOverlay);
 
-        backBlink = new FlxSprite(74*Main.SCALE, 38*Main.SCALE);
+        backBlink = new FlxSprite(1*Main.SCALE, 38*Main.SCALE);
         backBlink.loadGraphic(AssetPaths.backblink__png, true, 72, 72);
         backBlink.animation.add("blink", [0, 1], 2, false);
         add(backBlink);
@@ -46,9 +51,9 @@ class ControlMenu extends FlakeState
 
         backBlink.animation.play("blink");
 
-        if (FlxG.sound.music == null) // don't restart the music if it's already playing
-        {
-            FlxG.sound.playMusic(AssetPaths.theme__ogg, 0.3, true);
+        if (random.bool(4)) {
+            poofs.add(new HeartPoof(random.int(-4, 84-14) * Main.SCALE, random.int(0, 48-18) * Main.SCALE)); 
+            Main.playTwinkle();
         }
 
         if (bgFlakeCount < maxBgFlakes)

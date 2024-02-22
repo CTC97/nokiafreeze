@@ -168,6 +168,7 @@ class PlayState extends FlakeState
 			moveSelector("up");
 			newTarget();
 			score += 1;
+			hud.addHeartPoof();
 			var loveQuip:Int = random.int(0, 4);
 			//scoreText.text = 'SCORE: $score';
 		} else if (e) {

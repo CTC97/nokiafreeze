@@ -23,6 +23,8 @@ class Menu extends FlakeState
     private var moveSelector:Bool;
     private var select:Bool;
 
+    private var poofs:FlxTypedGroup<HeartPoof>;
+
 	override public function create()
 	{
         Main.defineSounds();
@@ -33,6 +35,8 @@ class Menu extends FlakeState
 
         random = new FlxRandom();
 
+        
+
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.menubg__png, false, 672, 384);
 		add(bg);
 
@@ -41,6 +45,9 @@ class Menu extends FlakeState
 
         bgFlakes = new FlxTypedGroup<BGFlake>();
 		add(bgFlakes);
+
+        poofs = new FlxTypedGroup<HeartPoof>();
+        add(poofs);
 
         menuOverlay = new FlxSprite(0, 0).loadGraphic(AssetPaths.menuoverlay__png, false, 672, 384);
         add(menuOverlay);
@@ -58,9 +65,9 @@ class Menu extends FlakeState
     override public function update(elapsed:Float) {
         super.update(elapsed);
 
-        if (FlxG.sound.music == null) // don't restart the music if it's already playing
-        {
-            FlxG.sound.playMusic(AssetPaths.theme__wav, 0.3, true);
+        if (random.bool(4)) {
+            poofs.add(new HeartPoof(random.int(-4, 84-18) * Main.SCALE, random.int(0, 48-18) * Main.SCALE)); 
+            Main.playTwinkle();
         }
 
         if (bgFlakeCount < maxBgFlakes)

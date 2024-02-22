@@ -191,6 +191,10 @@ class HUD extends FlxTypedGroup<FlxSprite>
     }
 
     public function setLifeValue(value:String) {
+        if (value == "2") add(new HeartDrain(life.x + 12*Main.SCALE, life.y+Main.SCALE*1));
+        if (value == "1") add(new HeartDrain(life.x + 6*Main.SCALE, life.y+Main.SCALE*1));
+        if (value == "0") add(new HeartDrain(life.x, life.y+Main.SCALE*1));
+        
         life.setValue(value);
     }
 
@@ -208,5 +212,9 @@ class HUD extends FlxTypedGroup<FlxSprite>
             numberTens.setValue('x');
             numberHundreds.setValue('x');
         }
+    }
+
+    public function addHeartPoof() {
+        add(new HeartPoof(selector.x, selector.y));
     }
 }

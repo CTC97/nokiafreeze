@@ -36,6 +36,22 @@ class Main extends Sprite
 		AssetPaths.spinefive_inverted__png,
 		AssetPaths.spinesix_invertedt__png
 	];
+	public static var TWINKLES:Array<FlxSoundAsset> = [
+		AssetPaths.menuflake0__wav,
+		AssetPaths.menuflake1__wav,
+		AssetPaths.menuflake2__wav,
+		AssetPaths.menuflake3__wav,
+		AssetPaths.menuflake4__wav,
+		AssetPaths.menuflake5__wav,
+		AssetPaths.menuflake6__wav,
+		AssetPaths.menuflake7__wav,
+		AssetPaths.menuflake8__wav,
+		AssetPaths.menuflake9__wav,
+		AssetPaths.menuflake10__wav,
+		AssetPaths.menuflake11__wav,
+		AssetPaths.menuflake12__wav,
+		AssetPaths.menuflake13__wav
+	];
 	public static var SPINE_SIZES:Array<Array<Int>> = [
 		[128, 112], [128, 112], [128, 112], [96, 112], [96, 80], [128, 112]
 	];
@@ -54,6 +70,8 @@ class Main extends Sprite
 
 	private static var nothing:Int;
 
+	private static var canTwinkle:Bool;
+
 	public function new()
 	{
 		super();
@@ -67,6 +85,8 @@ class Main extends Sprite
 		random = new FlxRandom();
 
 		defineSounds();
+
+		canTwinkle = true;
 	}
 
 	public static function defineSounds() {
@@ -74,7 +94,7 @@ class Main extends Sprite
 
 		menuMoveSound = FlxG.sound.load(AssetPaths.move__wav);
 		menuMoveSound.onComplete = function() {
-			FlxG.sound.music.volume = 0.3;
+			canTwinkle = true;
 		};
 
 		enterSound = FlxG.sound.load(AssetPaths.enter__wav);
@@ -96,7 +116,11 @@ class Main extends Sprite
 	}
 
 	public static function playMenuMove() {
-		FlxG.sound.music.volume = 0;
+		canTwinkle = false;
 		menuMoveSound.play();
+	}
+
+	public static function playTwinkle() {
+		if (canTwinkle) FlxG.sound.load(TWINKLES[random.int(0, TWINKLES.length-1)], 0.2).play();
 	}
 }
