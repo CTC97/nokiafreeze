@@ -13,6 +13,7 @@ class Menu extends FlakeState
     private var menuOverlay:FlxSprite;
 
     private var menuSelector:FlxSprite;
+    private var menuFlake:MenuFlake;
 
 	//private var bgFlakes:FlxTypedGroup<BGFlake>;
 
@@ -44,7 +45,10 @@ class Menu extends FlakeState
         menuOverlay = new FlxSprite(0, 0).loadGraphic(AssetPaths.menuoverlay__png, false, 672, 384);
         add(menuOverlay);
 
-        menuSelector = new FlxSprite(224, 252).loadGraphic(AssetPaths.menuselector__png, true, 16, 16);
+        menuFlake = new MenuFlake(32*Main.SCALE, 2*Main.SCALE);
+        add(menuFlake);
+
+        menuSelector = new FlxSprite(31*Main.SCALE, 31*Main.SCALE).loadGraphic(AssetPaths.menuselector__png, true, 16, 16);
         menuSelector.animation.add("blink", [0, 1], 2, true);
         add(menuSelector);
 
@@ -72,16 +76,15 @@ class Menu extends FlakeState
         select = FlxG.keys.justPressed.ENTER || FlxG.keys.justPressed.SPACE;
 
         if (moveSelector) {
-                
-            Main.moveSound.play();
-            menuSelector.animation.play("blink");
-            if (onPlay) menuSelector.y = 298;
-            else menuSelector.y = 252;
-
+            Main.playMenuMove();
             onPlay = !onPlay;
+            menuSelector.animation.play("blink");
+            if (onPlay) menuSelector.y = 31*Main.SCALE;
+            else menuSelector.y = 38*Main.SCALE;
         }
 
         if (select && onPlay) FlxG.switchState(new PlayState());
+        else if (select && !onPlay) FlxG.switchState(new ControlMenu());
     }
 
     

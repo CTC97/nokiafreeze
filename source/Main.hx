@@ -45,6 +45,7 @@ class Main extends Sprite
 	public static var lastFlakeSpawnX:Int = -1;
 
 	public static var moveSound:FlxSound;
+	public static var menuMoveSound:FlxSound;
 	public static var enterSound:FlxSound;
 	private static var hitSounds:Array<FlxSound>;
 	private static var missSounds:Array<FlxSound>;
@@ -70,6 +71,12 @@ class Main extends Sprite
 
 	public static function defineSounds() {
 		moveSound = FlxG.sound.load(AssetPaths.move__wav);
+
+		menuMoveSound = FlxG.sound.load(AssetPaths.move__wav);
+		menuMoveSound.onComplete = function() {
+			FlxG.sound.music.volume = 0.3;
+		};
+
 		enterSound = FlxG.sound.load(AssetPaths.enter__wav);
 		//missSound = FlxG.sound.load(AssetPaths.miss__wav);
 		//hitSound = FlxG.sound.load(AssetPaths.success__wav);
@@ -86,5 +93,10 @@ class Main extends Sprite
 			if (missType == "wrong") missSounds[0].play();
 			if (missType == "miss") missSounds[1].play();
 		}
+	}
+
+	public static function playMenuMove() {
+		FlxG.sound.music.volume = 0;
+		menuMoveSound.play();
 	}
 }

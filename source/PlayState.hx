@@ -64,7 +64,7 @@ class PlayState extends FlakeState
 		bg = new FlxSprite(0, 0).loadGraphic(AssetPaths.bigbginverted__png, false, 672, 384);
 		add(bg);
 
-		gameOverSprite = new FlxSprite(22*Main.SCALE, 12 * Main.SCALE).loadGraphic(AssetPaths.gameover__png, true, 40*Main.SCALE, 23*Main.SCALE);
+		gameOverSprite = new FlxSprite(23*Main.SCALE, 22 * Main.SCALE).loadGraphic(AssetPaths.gameover__png, true, 38*Main.SCALE, 23*Main.SCALE);
 		gameOverSprite.animation.add("blink", [0,1], 2, false);
 
 		elapsedLimit = 1.5;
@@ -123,6 +123,7 @@ class PlayState extends FlakeState
 		
 		if (life <= 0 && !gameOver) {
 			gameOver = true;
+			hud.removeQuipBubble();
 			add(gameOverSprite);
 			gameOverSprite.animation.play("blink");
 		}
@@ -333,6 +334,10 @@ class PlayState extends FlakeState
 			}
 		}
 		return true;
+	}
+
+	public function getGameOver(){
+		return gameOver;
 	}
 
 }
