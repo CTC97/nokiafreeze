@@ -66,7 +66,7 @@ class Menu extends FlakeState
         super.update(elapsed);
 
         if (random.bool(4)) {
-            poofs.add(new HeartPoof(random.int(-4, 84-18) * Main.SCALE, random.int(0, 48-18) * Main.SCALE)); 
+            poofs.add(new HeartPoof(random.int(-4, 84-14) * Main.SCALE, random.int(0, 48-18) * Main.SCALE)); 
             Main.playTwinkle();
         }
 

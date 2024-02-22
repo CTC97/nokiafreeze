@@ -101,12 +101,12 @@ class HUD extends FlxTypedGroup<FlxSprite>
         labels.loadGraphic(AssetPaths.labels__png, false, 632, 128);
         add(labels);
 
-        life = new Life(2*Main.SCALE, 1*Main.SCALE);
+        life = new Life(2*Main.SCALE, 2*Main.SCALE);
         add(life);
 
-        numberOnes = new Number(77*Main.SCALE, 1*Main.SCALE, "0");
-        numberTens = new Number(71*Main.SCALE, 1*Main.SCALE, "0");
-        numberHundreds = new Number(65*Main.SCALE, 1*Main.SCALE, "0");
+        numberOnes = new Number(77*Main.SCALE, 2*Main.SCALE, "0");
+        numberTens = new Number(71*Main.SCALE, 2*Main.SCALE, "0");
+        numberHundreds = new Number(65*Main.SCALE, 2*Main.SCALE, "0");
 
         add(numberOnes);
         add(numberTens);
