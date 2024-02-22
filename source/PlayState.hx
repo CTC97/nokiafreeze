@@ -55,6 +55,9 @@ class PlayState extends FlakeState
 	private var elapsedSinceTargetSpawn:Int;
 	private var targetSpawnThreshold:Int;
 
+	private var paused:Bool;
+	private var pauseBlip:PauseBlip;
+
 	override public function create()
 	{
 		FlxG.sound.pause();
@@ -112,6 +115,11 @@ class PlayState extends FlakeState
 
 		targetSpawnThreshold = random.int(4, 7);
 
+		paused = false;
+		pauseBlip = new PauseBlip(29 * Main.SCALE, 18 * Main.SCALE);
+		pauseBlip.visible = false;
+		add(pauseBlip);
+
 		super.create();
 	}
 
@@ -120,9 +128,18 @@ class PlayState extends FlakeState
 		super.update(elapsed);
 
 		hud.setScoreNumbers(score);
+
+		if (!gameOver && FlxG.keys.justPressed.ESCAPE) {
+			Main.moveSound.play(true);
+			paused = !paused;
+		}
+
+		pauseBlip.visible = paused;
+		if (paused) return;
 		
 		if (life <= 0 && !gameOver) {
 			gameOver = true;
+			//Stats.writeStats(score);
 			hud.removeQuipBubble();
 			add(gameOverSprite);
 			gameOverSprite.animation.play("blink");

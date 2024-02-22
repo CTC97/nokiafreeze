@@ -55,7 +55,7 @@ class Menu extends FlakeState
         menuFlake = new MenuFlake(32*Main.SCALE, 2*Main.SCALE);
         add(menuFlake);
 
-        menuSelector = new FlxSprite(31*Main.SCALE, 31*Main.SCALE).loadGraphic(AssetPaths.menuselector__png, true, 16, 16);
+        menuSelector = new FlxSprite(30*Main.SCALE, 31*Main.SCALE).loadGraphic(AssetPaths.menuselector__png, true, 16, 16);
         menuSelector.animation.add("blink", [0, 1], 2, true);
         add(menuSelector);
 
